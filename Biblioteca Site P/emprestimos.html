@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Biblioteca Arco-Íris - Meus Empréstimos</title>
+  <link rel="icon" href="favicon.ico">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .header {
+      background: #333;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+    }
+
+    .header-title {
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .header-btn {
+      background: #ff9100;
+      color: white;
+      padding: 8px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .emprestimos-container {
+      margin-top: 70px;
+      padding: 20px;
+      background: #ff9000;
+      border-radius: 15px;
+    }
+
+    .emprestimo-card {
+      background: #ffb347;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .emprestimo-card.removendo {
+      opacity: 0;
+      transform: translateX(100%);
+    }
+
+    .book-thumb {
+      width: 80px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 5px;
+    }
+
+    .book-info {
+      flex: 1;
+    }
+
+    .book-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: white;
+      margin-bottom: 5px;
+    }
+
+    .book-details {
+      color: white;
+      font-size: 14px;
+    }
+
+    .status {
+      padding: 5px 10px;
+      border-radius: 15px;
+      font-size: 12px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .status.emprestado {
+      background: #4CAF50;
+      color: white;
+    }
+
+    .status.atrasado {
+      background: #f44336;
+      color: white;
+    }
+
+    .status.agendado {
+      background: #2196F3;
+      color: white;
+    }
+
+    .status.pendente {
+      background-color: #ff9000;
+      color: white;
+    }
+
+    .status.busca_pendente {
+      background: #9C27B0;
+      color: white;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px;
+      color: white;
+    }
+
+    .empty-state h2 {
+      margin-bottom: 20px;
+    }
+
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-width: 150px;
+    }
+
+    .btn-renovar, .btn-devolver {
+      padding: 8px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      font-weight: bold;
+    }
+
+    .btn-renovar {
+      background: #4CAF50;
+      color: white;
+    }
+
+    .btn-renovar:hover {
+      background: #45a049;
+      transform: translateY(-2px);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .btn-devolver {
+      background: #f44336;
+      color: white;
+    }
+
+    .btn-devolver:hover {
+      background: #da190b;
+      transform: translateY(-2px);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .btn-devolver.pendente {
+      background-color: #ff9000;
+      cursor: not-allowed;
+    }
+
+    .btn-devolver.pendente:hover {
+      background-color: #ff9000;
+      transform: none;
+    }
+
+    .multa-info {
+      background: rgba(244, 67, 54, 0.1);
+      padding: 8px;
+      border-radius: 5px;
+      margin-bottom: 10px;
+      color: #f44336;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .agendamento-info {
+      color: white;
+      font-size: 14px;
+      margin-top: 5px;
+    }
+
+    /* Modal de Pagamento */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background-color: #fff;
+      margin: 15% auto;
+      padding: 20px;
+      width: 90%;
+      max-width: 500px;
+      border-radius: 10px;
+      position: relative;
+    }
+
+    .close-modal {
+      position: absolute;
+      right: 20px;
+      top: 15px;
+      font-size: 24px;
+      cursor: pointer;
+      color: #666;
+    }
+
+    .modal-title {
+      font-size: 20px;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .payment-options {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .payment-option {
+      flex: 1;
+      padding: 15px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.3s;
+    }
+
+    .payment-option:hover {
+      border-color: #ff9000;
+    }
+
+    .payment-option.selected {
+      border-color: #ff9000;
+      background: rgba(255, 144, 0, 0.1);
+    }
+
+    .payment-option img {
+      width: 40px;
+      height: 40px;
+      margin-bottom: 10px;
+    }
+
+    .btn-confirmar {
+      background: #ff9000;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 100%;
+      font-size: 16px;
+      transition: background-color 0.3s;
+    }
+
+    .btn-confirmar:hover {
+      background: #ff7b00;
+    }
+
+    .btn-cancelar {
+      background: #f44336;
+      color: white;
+      padding: 8px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      font-weight: bold;
+    }
+
+    .btn-cancelar:hover {
+      background: #da190b;
+      transform: translateY(-2px);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-title">
+      <img src="IMG/logo.png" alt="Logo" style="height: 30px;">
+      <span>Biblioteca Arco-Íris</span>
+    </div>
+    <div class="header-buttons">
+      <div class="user-info">
+        <span class="user-name">Bem-vindo(a)!</span>
+        <a href="usuario.html" class="header-btn">Voltar</a>
+        <a href="index.html" class="header-btn">Sair</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Modal de Pagamento -->
+  <div id="paymentModal" class="modal">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <h2 class="modal-title">Escolha a forma de pagamento</h2>
+      <div class="payment-options">
+        <div class="payment-option" data-method="pix">
+          <img src="IMG/pix.png" alt="PIX">
+          <div>PIX</div>
+        </div>
+        <div class="payment-option" data-method="card">
+          <img src="IMG/card.png" alt="Cartão">
+          <div>Cartão</div>
+        </div>
+        <div class="payment-option" data-method="boleto">
+          <img src="IMG/boleto.png" alt="Boleto">
+          <div>Boleto</div>
+        </div>
+      </div>
+      <button class="btn-confirmar">Confirmar Pagamento</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="emprestimos-container">
+      <div id="emprestimosList">
+        <!-- Os empréstimos serão inseridos aqui via JavaScript -->
+      </div>
+      <!-- Exemplo de estado vazio -->
+      <div class="empty-state" style="display: none;">
+        <h2>Você não tem empréstimos ativos</h2>
+        <a href="usuario.html" class="header-btn">Emprestar um livro</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Verificar se o usuário está logado
+    window.addEventListener('load', function() {
+      const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+      if (!usuarioLogado) {
+        window.location.href = 'login.html';
+        return;
+      }
+    });
+
+    // Carregar empréstimos e agendamentos
+    const emprestimos = JSON.parse(localStorage.getItem('emprestimos') || '[]');
+    const agendamentos = JSON.parse(localStorage.getItem('agendamentos') || '[]');
+    const emprestimosContainer = document.querySelector('.emprestimos-container');
+
+    // Filtrar apenas empréstimos ativos (não devolvidos)
+    const emprestimosAtivos = emprestimos.filter(emprestimo => emprestimo.status !== 'devolvido');
+    const agendamentosAtivos = agendamentos.filter(agendamento => agendamento.status === 'busca_pendente');
+
+    if (emprestimosAtivos.length === 0 && agendamentosAtivos.length === 0) {
+      document.querySelector('.empty-state').style.display = 'block';
+    } else {
+      // Mostrar empréstimos
+      emprestimosAtivos.forEach(emprestimo => {
+        const card = document.createElement('div');
+        card.className = 'emprestimo-card';
+        card.setAttribute('data-id', emprestimo.id);
+        
+        const status = getStatus(emprestimo);
+        
+        card.innerHTML = `
+          <img src="${emprestimo.imagem}" alt="${emprestimo.titulo}" class="book-thumb">
+          <div class="book-info">
+            <h3>${emprestimo.titulo}</h3>
+            ${emprestimo.status !== 'agendado' ? `
+              <p>Data do empréstimo: ${emprestimo.dataEmprestimo}</p>
+              <p>Data de devolução: ${emprestimo.dataDevolucao}</p>
+            ` : ''}
+            <p class="status ${status.toLowerCase()}">Status: ${status}</p>
+            ${emprestimo.status === 'agendado' ? 
+              '<button class="btn-cancelar">Cancelar Agendamento</button>' : 
+              `${status === 'Em dia' ? '<button class="btn-renovar">Renovar</button>' : ''}
+              <button class="btn-devolver">Devolver</button>`
+            }
+          </div>
+        `;
+
+        // Adicionar evento de renovação
+        const renovarBtn = card.querySelector('.btn-renovar');
+        if (renovarBtn) {
+          renovarBtn.addEventListener('click', () => {
+            renovarEmprestimo(emprestimo.id);
+          });
+        }
+
+        // Adicionar evento de devolução
+        const devolverBtn = card.querySelector('.btn-devolver');
+        if (devolverBtn) {
+          devolverBtn.addEventListener('click', () => {
+            devolverEmprestimo(emprestimo.id);
+          });
+        }
+
+        // Adicionar evento de cancelamento
+        const cancelarBtn = card.querySelector('.btn-cancelar');
+        if (cancelarBtn) {
+          cancelarBtn.addEventListener('click', () => {
+            cancelarAgendamento(emprestimo.id);
+          });
+        }
+
+        emprestimosContainer.appendChild(card);
+      });
+
+      // Mostrar agendamentos pendentes
+      agendamentosAtivos.forEach(agendamento => {
+        const card = document.createElement('div');
+        card.className = 'emprestimo-card';
+        card.setAttribute('data-id', agendamento.id);
+        
+        card.innerHTML = `
+          <img src="${agendamento.imagem}" alt="${agendamento.titulo}" class="book-thumb">
+          <div class="book-info">
+            <h3>${agendamento.titulo}</h3>
+            <p>Data do agendamento: ${agendamento.dataAgendamento}</p>
+            <p class="status busca_pendente">Status: Busca Pendente</p>
+            <p class="agendamento-info">Você será notificado quando o livro estiver disponível para retirada.</p>
+            <button class="btn-cancelar">Cancelar Agendamento</button>
+          </div>
+        `;
+
+        // Adicionar evento de cancelamento
+        const cancelarBtn = card.querySelector('.btn-cancelar');
+        if (cancelarBtn) {
+          cancelarBtn.addEventListener('click', () => {
+            if (confirm('Tem certeza que deseja cancelar o agendamento deste livro?')) {
+              // Remover agendamento
+              const agendamentosAtualizados = agendamentos.filter(a => a.id !== agendamento.id);
+              localStorage.setItem('agendamentos', JSON.stringify(agendamentosAtualizados));
+              
+              // Remover card com animação
+              card.classList.add('removendo');
+              setTimeout(() => {
+                card.remove();
+                
+                // Verificar se ainda existem empréstimos ou agendamentos
+                const emprestimosRestantes = document.querySelectorAll('.emprestimo-card').length;
+                if (emprestimosRestantes === 0) {
+                  document.querySelector('.empty-state').style.display = 'block';
+                }
+              }, 300);
+            }
+          });
+        }
+
+        emprestimosContainer.appendChild(card);
+      });
+    }
+
+    // Função para obter o status do empréstimo
+    function getStatus(emprestimo) {
+      if (emprestimo.status === 'devolvido') {
+        return 'Devolvido';
+      }
+      
+      if (emprestimo.status === 'agendado') {
+        return 'Agendado';
+      }
+
+      if (emprestimo.status === 'pendente_devolucao') {
+        return 'Pendente Devolução';
+      }
+      
+      const dataDevolucao = new Date(emprestimo.dataDevolucao.split('/').reverse().join('-'));
+      const hoje = new Date();
+      
+      if (hoje > dataDevolucao) {
+        return 'Atrasado';
+      }
+      
+      return 'Em dia';
+    }
+
+    // Função para renovar empréstimo
+    function renovarEmprestimo(id) {
+      const emprestimos = JSON.parse(localStorage.getItem('emprestimos') || '[]');
+      const emprestimo = emprestimos.find(e => e.id === id);
+      
+      if (emprestimo && !emprestimo.renovado && emprestimo.status !== 'agendado') {
+        const dataDevolucao = new Date(emprestimo.dataDevolucao.split('/').reverse().join('-'));
+        dataDevolucao.setDate(dataDevolucao.getDate() + 15);
+        
+        emprestimo.dataDevolucao = dataDevolucao.toLocaleDateString('pt-BR');
+        emprestimo.renovado = true;
+        
+        localStorage.setItem('emprestimos', JSON.stringify(emprestimos));
+        location.reload();
+      } else {
+        alert('Este empréstimo não pode ser renovado.');
+      }
+    }
+
+    // Função para devolver empréstimo
+    function devolverEmprestimo(id) {
+      const emprestimos = JSON.parse(localStorage.getItem('emprestimos') || '[]');
+      const emprestimo = emprestimos.find(e => e.id === id);
+      
+      if (emprestimo) {
+        // Criar solicitação de devolução
+        const solicitacoesDevolucao = JSON.parse(localStorage.getItem('solicitacoesDevolucao') || '[]');
+        const novaSolicitacao = {
+          id: Date.now(),
+          emprestimoId: id,
+          titulo: emprestimo.titulo,
+          dataSolicitacao: new Date().toLocaleDateString()
+        };
+        
+        solicitacoesDevolucao.push(novaSolicitacao);
+        localStorage.setItem('solicitacoesDevolucao', JSON.stringify(solicitacoesDevolucao));
+
+        // Atualizar status do empréstimo
+        emprestimo.status = 'pendente_devolucao';
+        localStorage.setItem('emprestimos', JSON.stringify(emprestimos));
+
+        // Atualizar interface
+        const card = document.querySelector(`[data-id="${id}"]`);
+        if (card) {
+          const status = card.querySelector('.status');
+          const btnDevolver = card.querySelector('.btn-devolver');
+          
+          status.textContent = 'Pendente Devolução';
+          status.classList.add('pendente');
+          btnDevolver.classList.add('pendente');
+          btnDevolver.disabled = true;
+        }
+
+        alert('Solicitação de devolução enviada. Aguarde a confirmação do administrador.');
+      }
+    }
+
+    // Função para cancelar agendamento
+    function cancelarAgendamento(id) {
+      if (confirm('Tem certeza que deseja cancelar o agendamento deste livro?')) {
+        const emprestimos = JSON.parse(localStorage.getItem('emprestimos') || '[]');
+        const emprestimo = emprestimos.find(e => e.id === id);
+        
+        if (emprestimo) {
+          // Encontrar o card do empréstimo
+          const card = document.querySelector(`[data-id="${id}"]`);
+          if (card) {
+            // Adicionar classe para animação de saída
+            card.classList.add('removendo');
+            
+            // Esperar a animação terminar antes de remover
+            setTimeout(() => {
+              card.remove();
+              
+              // Atualizar localStorage
+              emprestimo.status = 'devolvido';
+              localStorage.setItem('emprestimos', JSON.stringify(emprestimos));
+              
+              // Verificar se ainda existem empréstimos
+              const emprestimosRestantes = document.querySelectorAll('.emprestimo-card').length;
+              if (emprestimosRestantes === 0) {
+                document.querySelector('.empty-state').style.display = 'block';
+              }
+            }, 300);
+          }
+        }
+      }
+    }
+
+    // Função para fazer logout
+    document.querySelector('a[href="index.html"]').addEventListener('click', function(e) {
+      e.preventDefault();
+      localStorage.removeItem('usuarioLogado');
+      window.location.href = 'index.html';
+    });
+  </script>
+</body>
+</html> 

@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Biblioteca Arco-Íris - Administração</title>
+    <link rel="icon" href="favicon.ico">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: #e0e0e0;
+            font-family: Arial, sans-serif;
+            position: relative;
+        }
+
+        .header {
+            background: #333;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header-title {
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .header-btn {
+            background: #f3a53f;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        .header-btn:hover {
+            background: #f3a53f;
+        }
+
+        .donations-btn {
+            background: #f3a53f;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .donations-btn:hover {
+            background: #f3a53f;
+        }
+
+        .admin-container {
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+            margin-top: 70px;
+            max-width: 1800px;
+            margin-left: auto;
+            margin-right: auto;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .books-section {
+            flex: 1;
+            background: #ff9000;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            width: 100%;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+            background-color: #f3a53f;
+            background-image: none;
+            opacity: 1;
+        }
+
+        .books-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .books-title {
+            color: #333;
+            font-size: 24px;
+            margin: 0;
+        }
+
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 50px;
+            margin: 30px auto;
+            justify-content: space-between;
+            padding: 20px;
+            max-width: 1400px;
+        }
+
+        .book-card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            min-height: 280px;
+            margin: 0 auto;
+            width: 100%;
+            max-width: 220px;
+        }
+
+        .book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .book-thumb {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 6px;
+            margin-bottom: 12px;
+        }
+
+        .book-title {
+            color: #333;
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 15px;
+            height: 35px;
+            overflow: hidden;
+            display: -webkit-box;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            line-height: 1.3;
+        }
+
+        .book-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-top: auto;
+        }
+
+        .book-btn {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s;
+            color: white;
+            max-width: 100px;
+        }
+
+        .btn-edit {
+            background: #4CAF50;
+        }
+
+        .btn-delete {
+            background: #f44336;
+        }
+
+        .btn-edit:hover {
+            background: #45a049;
+        }
+
+        .btn-delete:hover {
+            background: #da190b;
+        }
+
+        .action-btn {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+            white-space: nowrap;
+            position: relative;
+            z-index: 1;
+        }
+
+        .action-btn:hover {
+            background: #45a049;
+        }
+
+        .side-panel {
+            width: 300px;
+            min-width: 300px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .pending-donations {
+            background: #ff9000;
+            padding: 20px;
+            border-radius: 15px;
+            height: fit-content;
+            position: relative;
+            z-index: 1;
+        }
+
+        .pending-title {
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .donation-card {
+            background: #f8f8f8;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #eee;
+        }
+
+        .donation-info {
+            color: #333;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .donation-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .donation-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            color: white;
+        }
+
+        .btn-confirm {
+            background: #4CAF50;
+        }
+
+        .btn-reject {
+            background: #f44336;
+        }
+
+        .btn-confirm:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+
+        .btn-reject:hover {
+            background: #da190b;
+            transform: translateY(-2px);
+        }
+
+        .empty-donations {
+            color: #666;
+            text-align: center;
+            padding: 40px 20px;
+            background: #f8f8f8;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            position: relative;
+            background: white;
+            margin: 15% auto;
+            padding: 20px;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .close-modal {
+            position: absolute;
+            right: 15px;
+            top: 10px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+            z-index: 1;
+        }
+
+        .close-modal:hover {
+            color: #333;
+        }
+
+        .modal-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .modal-form input,
+        .modal-form textarea {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .modal-form button {
+            background: #4CAF50;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        .modal-form button:hover {
+            background: #45a049;
+        }
+
+        .donations-panel {
+            position: fixed;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            background: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            padding: 20px;
+            overflow-y: auto;
+            border-radius: 15px;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .donations-panel.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .donations-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .donations-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .close-donations {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .close-donations:hover {
+            color: #333;
+        }
+
+        .devolucoes-panel {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            width: 300px;
+            max-height: 80vh;
+            background: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            padding: 20px;
+            overflow-y: auto;
+            border-radius: 15px;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .devolucoes-panel.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .devolucoes-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .devolucoes-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .close-devolucoes {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .devolucao-card {
+            background: #f8f8f8;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #eee;
+        }
+
+        .devolucao-info {
+            color: #333;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .devolucao-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .devolucao-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            color: white;
+        }
+
+        .btn-confirmar-devolucao {
+            background: #4CAF50;
+        }
+
+        .btn-rejeitar-devolucao {
+            background: #f44336;
+        }
+
+        .btn-confirmar-devolucao:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+
+        .btn-rejeitar-devolucao:hover {
+            background: #da190b;
+            transform: translateY(-2px);
+        }
+
+        .empty-devolucoes {
+            color: #666;
+            text-align: center;
+            padding: 40px 20px;
+            background: #f8f8f8;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 1600px) {
+            .books-grid {
+                grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+                gap: 40px;
+                max-width: 1200px;
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .books-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 35px;
+                max-width: 1000px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .admin-container {
+                padding: 80px 15px 15px;
+            }
+
+            .books-section {
+                padding: 20px;
+            }
+
+            .books-grid {
+                grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+                gap: 25px;
+                padding: 15px;
+            }
+
+            .book-card {
+                padding: 10px;
+                min-height: 240px;
+            }
+
+            .book-thumb {
+                height: 160px;
+                margin-bottom: 10px;
+            }
+
+            .book-title {
+                font-size: 12px;
+                margin-bottom: 10px;
+                height: 30px;
+            }
+
+            .book-btn {
+                padding: 6px;
+                font-size: 12px;
+                max-width: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-title">
+            <img src="IMG/logo.png" alt="Logo" style="height: 30px;">
+            <span>Biblioteca Arco-Íris - Painel Administrativo</span>
+        </div>
+        <div class="header-buttons">
+            <button class="donations-btn" onclick="toggleDonationsPanel()">
+                <span>Doações Pendentes</span>
+                <span id="donationsCount" style="background: white; color: #ff9000; padding: 2px 6px; border-radius: 10px; font-size: 12px;">0</span>
+            </button>
+            <button class="donations-btn" onclick="toggleDevolucoesPanel()">
+                <span>Devoluções Pendentes</span>
+                <span id="devolucoesCount" style="background: white; color: #ff9000; padding: 2px 6px; border-radius: 10px; font-size: 12px;">0</span>
+            </button>
+            <a href="index.html" class="header-btn">Sair</a>
+        </div>
+    </header>
+
+    <div class="admin-container">
+        <div class="books-section">
+            <div class="books-header">
+                <h2 class="books-title">Livros Disponíveis</h2>
+                <button class="action-btn" onclick="showAddBookModal()">+ Adicionar Novo Livro</button>
+            </div>
+            <div class="books-grid" id="booksGrid">
+                <!-- Os livros serão inseridos aqui via JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para adicionar/editar livro -->
+    <div id="bookModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle">Adicionar Novo Livro</h2>
+            <form id="bookForm" class="modal-form">
+                <input type="hidden" id="bookId">
+                <input type="text" id="bookTitle" placeholder="Título do livro" required>
+                <input type="text" id="bookImage" placeholder="URL da imagem" required>
+                <input type="number" id="bookEstoque" placeholder="Quantidade em estoque" min="0" required>
+                <input type="text" id="bookAutor" placeholder="Autor do livro" required>
+                <input type="number" id="bookAno" placeholder="Ano de publicação" min="1000" max="2024" required>
+                <input type="number" id="bookPaginas" placeholder="Número de páginas" min="1" required>
+                <input type="text" id="bookCategoria" placeholder="Categoria do livro" required>
+                <textarea id="bookDescription" placeholder="Sinopse do livro" rows="4" required></textarea>
+                <button type="submit">Salvar</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="donations-panel" id="donationsPanel">
+        <div class="donations-header">
+            <h2 class="donations-title">Doações Pendentes</h2>
+            <button class="close-donations" onclick="toggleDonationsPanel()">&times;</button>
+        </div>
+        <div id="donationsList">
+            <!-- As doações pendentes serão inseridas aqui via JavaScript -->
+        </div>
+    </div>
+
+    <div class="devolucoes-panel" id="devolucoesPanel">
+        <div class="devolucoes-header">
+            <h2 class="devolucoes-title">Devoluções Pendentes</h2>
+            <button class="close-devolucoes" onclick="toggleDevolucoesPanel()">&times;</button>
+        </div>
+        <div id="devolucoesList">
+            <!-- As devoluções pendentes serão inseridas aqui via JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        // Verificar se o usuário está logado e é admin
+        window.addEventListener('load', function() {
+            const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+            if (!usuarioLogado || !usuarioLogado.isAdmin) {
+                window.location.href = 'login.html';
+                return;
+            }
+        });
+
+        // Função para fazer logout
+        document.querySelector('a[href="index.html"]').addEventListener('click', function(e) {
+            e.preventDefault();
+            localStorage.removeItem('usuarioLogado');
+            window.location.href = 'index.html';
+        });
+
+        // Lista de livros
+        const books = [
+            { id: 1, title: 'O Pequeno Príncipe', image: 'IMG/pequenoprincipe.jpg', estoque: 5, autor: 'Antoine de Saint-Exupéry', ano: 1943, paginas: 96, categoria: 'Literatura Infantil', descricao: 'Um piloto cai com seu avião no deserto e ali encontra um pequeno príncipe que lhe conta sua história.' },
+            { id: 2, title: 'Harry Potter e a Pedra Filosofal', image: 'IMG/harrypotereapedrafilosofal.jpg', estoque: 3, autor: 'J.K. Rowling', ano: 1997, paginas: 309, categoria: 'Fantasia', descricao: 'Harry Potter descobre que é um bruxo e começa sua jornada na Escola de Magia e Bruxaria de Hogwarts.' },
+            { id: 3, title: 'Dom Quixote', image: 'IMG/domquixote.jpg', estoque: 2, autor: 'Miguel de Cervantes', ano: 1605, paginas: 863, categoria: 'Romance', descricao: 'A história de um fidalgo que enlouquece após ler muitos romances de cavalaria e decide se tornar um cavaleiro andante.' },
+            { id: 4, title: '1984', image: 'IMG/1984.jpg', estoque: 4, autor: 'George Orwell', ano: 1949, paginas: 328, categoria: 'Ficção Científica', descricao: 'Uma distopia que retrata uma sociedade totalitária controlada por um regime opressor.' },
+            { id: 5, title: 'Orgulho e Preconceito', image: 'IMG/orgulhoepreconceito.jpg', estoque: 3, autor: 'Jane Austen', ano: 1813, paginas: 432, categoria: 'Romance', descricao: 'A história de Elizabeth Bennet e sua relação com o orgulhoso Sr. Darcy.' },
+            { id: 6, title: 'O Senhor dos Anéis', image: 'IMG/osenhordosaneis.webp', estoque: 2, autor: 'J.R.R. Tolkien', ano: 1954, paginas: 1216, categoria: 'Fantasia', descricao: 'A jornada épica de Frodo Bolseiro para destruir o Um Anel e derrotar o Senhor do Escuro.' },
+            { id: 7, title: 'A Metamorfose', image: 'IMG/ametamorfose.webp', estoque: 4, autor: 'Franz Kafka', ano: 1915, paginas: 96, categoria: 'Ficção', descricao: 'A história de Gregor Samsa, que acorda transformado em um inseto gigante.' },
+            { id: 8, title: 'Cem Anos de Solidão', image: 'IMG/cemanosdesolidao.jpg', estoque: 3, autor: 'Gabriel García Márquez', ano: 1967, paginas: 417, categoria: 'Realismo Mágico', descricao: 'A história da família Buendía ao longo de sete gerações na cidade fictícia de Macondo.' },
+            { id: 9, title: 'A Revolução dos Bichos', image: 'IMG/arevolucaodosbichos.jpg', estoque: 5, autor: 'George Orwell', ano: 1945, paginas: 152, categoria: 'Fábula', descricao: 'Uma sátira política sobre a Revolução Russa e o totalitarismo.' },
+            { id: 10, title: 'O Alquimista', image: 'IMG/oalquimista.jpg', estoque: 4, autor: 'Paulo Coelho', ano: 1988, paginas: 208, categoria: 'Ficção', descricao: 'A jornada de Santiago em busca de seu tesouro pessoal.' },
+            { id: 11, title: 'A Menina que Roubava Livros', image: 'IMG/ameninaqueroubavalivros.jpg', estoque: 3, autor: 'Markus Zusak', ano: 2005, paginas: 480, categoria: 'Ficção Histórica', descricao: 'A história de Liesel Meminger durante a Segunda Guerra Mundial.' },
+            { id: 12, title: 'O Hobbit', image: 'IMG/ohobbit.jpg', estoque: 2, autor: 'J.R.R. Tolkien', ano: 1937, paginas: 310, categoria: 'Fantasia', descricao: 'A aventura de Bilbo Bolseiro em sua jornada para ajudar os anões a recuperar seu reino.' },
+            { id: 13, title: 'A Culpa é das Estrelas', image: 'IMG/aculpaedasestrelas.jpg', estoque: 4, autor: 'John Green', ano: 2012, paginas: 288, categoria: 'Romance', descricao: 'A história de amor entre Hazel e Augustus, dois adolescentes com câncer.' },
+            { id: 14, title: 'O Código Da Vinci', image: 'IMG/ocodigodavinci.jpg', estoque: 3, autor: 'Dan Brown', ano: 2003, paginas: 689, categoria: 'Suspense', descricao: 'Um thriller que mistura arte, religião e conspiração.' },
+            { id: 15, title: 'A Cabana', image: 'IMG/acabana.jpg', estoque: 5, autor: 'William P. Young', ano: 2007, paginas: 256, categoria: 'Ficção Cristã', descricao: 'A história de um homem que encontra Deus em uma cabana no meio do mato.' },
+            { id: 16, title: 'O Nome do Vento', image: 'IMG/onomedovento.jpg', estoque: 2, autor: 'Patrick Rothfuss', ano: 2007, paginas: 662, categoria: 'Fantasia', descricao: 'A história de Kvothe, um músico e mago extraordinário.' },
+            { id: 17, title: 'Percy Jackson e o Ladrão de Raios', image: 'IMG/percyjacksoneoladraoderaios.jpg', estoque: 4, autor: 'Rick Riordan', ano: 2005, paginas: 377, categoria: 'Fantasia', descricao: 'A aventura de Percy Jackson, um semideus filho de Poseidon.' },
+            { id: 18, title: 'As Crônicas de Nárnia', image: 'IMG/ascronicasdenarnia.jpg', estoque: 3, autor: 'C.S. Lewis', ano: 1950, paginas: 767, categoria: 'Fantasia', descricao: 'As aventuras de crianças em um mundo mágico chamado Nárnia.' },
+            { id: 19, title: 'O Diário de Anne Frank', image: 'IMG/odiariodeannnefrank.jpg', estoque: 5, autor: 'Anne Frank', ano: 1947, paginas: 352, categoria: 'Biografia', descricao: 'O diário de uma jovem judia durante a Segunda Guerra Mundial.' },
+            { id: 20, title: 'A Arte da Guerra', image: 'IMG/aartedaguerra.jpg', estoque: 4, autor: 'Sun Tzu', ano: -500, paginas: 272, categoria: 'Estratégia', descricao: 'Um tratado militar chinês sobre estratégia e táticas de guerra.' },
+            { id: 21, title: 'O Príncipe', image: 'IMG/oprincipe.jpg', estoque: 3, autor: 'Nicolau Maquiavel', ano: 1532, paginas: 160, categoria: 'Filosofia Política', descricao: 'Um tratado político sobre como governar e manter o poder.' },
+            { id: 22, title: 'Memórias Póstumas de Brás Cubas', image: 'IMG/asmemoriaspostumasdebrascuba.jpg', estoque: 2, autor: 'Machado de Assis', ano: 1881, paginas: 240, categoria: 'Romance', descricao: 'A autobiografia de um defunto autor, narrada do além-túmulo.' },
+            { id: 23, title: 'Dom Casmurro', image: 'IMG/domcasmurro.webp', estoque: 4, autor: 'Machado de Assis', ano: 1899, paginas: 256, categoria: 'Romance', descricao: 'A história de Bentinho e sua desconfiança sobre a fidelidade de Capitu.' },
+            { id: 24, title: 'O Cortiço', image: 'IMG/ocortico.jpg', estoque: 3, autor: 'Aluísio Azevedo', ano: 1890, paginas: 320, categoria: 'Romance Naturalista', descricao: 'A vida dos moradores de um cortiço no Rio de Janeiro do século XIX.' },
+            { id: 25, title: 'Vidas Secas', image: 'IMG/vidassecas.jpg', estoque: 5, autor: 'Graciliano Ramos', ano: 1938, paginas: 176, categoria: 'Romance Regionalista', descricao: 'A história de uma família de retirantes no sertão nordestino.' },
+            { id: 26, title: 'Capitães da Areia', image: 'IMG/capitaesdaareia.jpg', estoque: 2, autor: 'Jorge Amado', ano: 1937, paginas: 256, categoria: 'Romance', descricao: 'A vida de um grupo de meninos de rua em Salvador.' },
+            { id: 27, title: 'Grande Sertão: Veredas', image: 'IMG/grandesertaoveredas.jpg', estoque: 4, autor: 'João Guimarães Rosa', ano: 1956, paginas: 624, categoria: 'Romance Regionalista', descricao: 'A história de Riobaldo e seu pacto com o diabo no sertão mineiro.' },
+            { id: 28, title: 'Macunaíma', image: 'IMG/macunaima.jpg', estoque: 3, autor: 'Mário de Andrade', ano: 1928, paginas: 192, categoria: 'Romance Modernista', descricao: 'A história do herói sem nenhum caráter que nasce na floresta e vai para a cidade.' }
+        ];
+
+        // Função para atualizar a grade de livros
+        function updateBooksGrid() {
+            const grid = document.getElementById('booksGrid');
+            grid.innerHTML = books.map(book => `
+                <div class="book-card">
+                    <img src="${book.image}" alt="${book.title}" class="book-thumb">
+                    <div class="book-title">${book.title}</div>
+                    <div class="book-actions">
+                        <button class="book-btn btn-edit" onclick="editBook(${book.id})">Editar</button>
+                        <button class="book-btn btn-delete" onclick="deleteBook(${book.id})">Excluir</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Funções do modal
+        function showAddBookModal() {
+            document.getElementById('modalTitle').textContent = 'Adicionar Novo Livro';
+            document.getElementById('bookForm').reset();
+            document.getElementById('bookId').value = '';
+            document.getElementById('bookModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('bookModal').style.display = 'none';
+        }
+
+        // Função para editar livro
+        function editBook(id) {
+            const book = books.find(b => b.id === id);
+            if (book) {
+                document.getElementById('modalTitle').textContent = 'Editar Livro';
+                document.getElementById('bookId').value = book.id;
+                document.getElementById('bookTitle').value = book.title;
+                document.getElementById('bookImage').value = book.image;
+                document.getElementById('bookEstoque').value = book.estoque;
+                document.getElementById('bookAutor').value = book.autor;
+                document.getElementById('bookAno').value = book.ano;
+                document.getElementById('bookPaginas').value = book.paginas;
+                document.getElementById('bookCategoria').value = book.categoria;
+                document.getElementById('bookDescription').value = book.descricao;
+                document.getElementById('bookModal').style.display = 'block';
+            }
+        }
+
+        // Função para excluir livro
+        function deleteBook(id) {
+            if (confirm('Tem certeza que deseja excluir este livro?')) {
+                const index = books.findIndex(b => b.id === id);
+                if (index !== -1) {
+                    books.splice(index, 1);
+                    updateBooksGrid();
+                }
+            }
+        }
+
+        // Event listener para o formulário do livro
+        document.getElementById('bookForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const id = document.getElementById('bookId').value;
+            const title = document.getElementById('bookTitle').value;
+            const image = document.getElementById('bookImage').value;
+            const estoque = parseInt(document.getElementById('bookEstoque').value);
+            const autor = document.getElementById('bookAutor').value;
+            const ano = parseInt(document.getElementById('bookAno').value);
+            const paginas = parseInt(document.getElementById('bookPaginas').value);
+            const categoria = document.getElementById('bookCategoria').value;
+            const descricao = document.getElementById('bookDescription').value;
+
+            if (id) {
+                // Editando livro existente
+                const index = books.findIndex(b => b.id === parseInt(id));
+                if (index !== -1) {
+                    books[index].title = title;
+                    books[index].image = image;
+                    books[index].estoque = estoque;
+                    books[index].autor = autor;
+                    books[index].ano = ano;
+                    books[index].paginas = paginas;
+                    books[index].categoria = categoria;
+                    books[index].descricao = descricao;
+                }
+            } else {
+                // Adicionando novo livro
+                const newId = Math.max(...books.map(b => b.id)) + 1;
+                books.push({ 
+                    id: newId, 
+                    title, 
+                    image, 
+                    estoque,
+                    autor,
+                    ano,
+                    paginas,
+                    categoria,
+                    descricao
+                });
+            }
+
+            // Salvar no localStorage para uso em outras páginas
+            localStorage.setItem('livros', JSON.stringify(books));
+            updateBooksGrid();
+            closeModal();
+        });
+
+        // Função para atualizar a lista de doações
+        function updateDonationsList() {
+            const donationsList = document.getElementById('donationsList');
+            const pendingDonations = JSON.parse(localStorage.getItem('pendingDonations') || '[]');
+            const donationsCount = document.getElementById('donationsCount');
+
+            // Atualiza o contador
+            donationsCount.textContent = pendingDonations.length;
+
+            if (pendingDonations.length === 0) {
+                donationsList.innerHTML = '<div class="empty-donations">Nenhuma doação pendente</div>';
+                return;
+            }
+
+            donationsList.innerHTML = pendingDonations.map(donation => `
+                <div class="donation-card" data-id="${donation.id}">
+                    <div class="donation-info">
+                        <strong>Usuário:</strong> ${donation.user}<br>
+                        <strong>Livro:</strong> ${donation.book}<br>
+                        <strong>Data:</strong> ${donation.date}
+                    </div>
+                    <div class="donation-actions">
+                        <button class="donation-btn btn-confirm" onclick="confirmDonation('${donation.id}')">Confirmar</button>
+                        <button class="donation-btn btn-reject" onclick="rejectDonation('${donation.id}')">Rejeitar</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function confirmDonation(id) {
+            const pendingDonations = JSON.parse(localStorage.getItem('pendingDonations') || '[]');
+            const donationIndex = pendingDonations.findIndex(d => d.id === id);
+            
+            if (donationIndex !== -1) {
+                pendingDonations.splice(donationIndex, 1);
+                localStorage.setItem('pendingDonations', JSON.stringify(pendingDonations));
+                updateDonationsList();
+                alert('Doação confirmada com sucesso!');
+            }
+        }
+
+        function rejectDonation(id) {
+            const pendingDonations = JSON.parse(localStorage.getItem('pendingDonations') || '[]');
+            const donationIndex = pendingDonations.findIndex(d => d.id === id);
+            
+            if (donationIndex !== -1) {
+                pendingDonations.splice(donationIndex, 1);
+                localStorage.setItem('pendingDonations', JSON.stringify(pendingDonations));
+                updateDonationsList();
+                alert('Doação rejeitada.');
+            }
+        }
+
+        // Função para alternar o painel de doações
+        function toggleDonationsPanel() {
+            const panel = document.getElementById('donationsPanel');
+            panel.classList.toggle('active');
+        }
+
+        // Fechar o painel ao clicar fora dele
+        document.addEventListener('click', function(event) {
+            const panel = document.getElementById('donationsPanel');
+            const donationsBtn = document.querySelector('.donations-btn');
+            
+            if (!panel.contains(event.target) && !donationsBtn.contains(event.target) && panel.classList.contains('active')) {
+                panel.classList.remove('active');
+            }
+        });
+
+        // Função para atualizar a lista de devoluções
+        function updateDevolucoesList() {
+            const devolucoesList = document.getElementById('devolucoesList');
+            const solicitacoesDevolucao = JSON.parse(localStorage.getItem('solicitacoesDevolucao') || '[]');
+            const devolucoesCount = document.getElementById('devolucoesCount');
+
+            // Atualiza o contador
+            devolucoesCount.textContent = solicitacoesDevolucao.length;
+
+            if (solicitacoesDevolucao.length === 0) {
+                devolucoesList.innerHTML = '<div class="empty-devolucoes">Nenhuma devolução pendente</div>';
+                return;
+            }
+
+            devolucoesList.innerHTML = solicitacoesDevolucao.map(solicitacao => `
+                <div class="devolucao-card" data-id="${solicitacao.id}">
+                    <div class="devolucao-info">
+                        <strong>Livro:</strong> ${solicitacao.titulo}<br>
+                        <strong>Data da Solicitação:</strong> ${solicitacao.dataSolicitacao}
+                    </div>
+                    <div class="devolucao-actions">
+                        <button class="devolucao-btn btn-confirmar-devolucao" onclick="confirmarDevolucao('${solicitacao.id}')">Confirmar</button>
+                        <button class="devolucao-btn btn-rejeitar-devolucao" onclick="rejeitarDevolucao('${solicitacao.id}')">Rejeitar</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function confirmarDevolucao(id) {
+            const solicitacoesDevolucao = JSON.parse(localStorage.getItem('solicitacoesDevolucao') || '[]');
+            const solicitacao = solicitacoesDevolucao.find(s => s.id === parseInt(id));
+            
+            if (solicitacao) {
+                // Atualizar status do empréstimo
+                const emprestimos = JSON.parse(localStorage.getItem('emprestimos') || '[]');
+                const emprestimo = emprestimos.find(e => e.id === solicitacao.emprestimoId);
+                
+                if (emprestimo) {
+                    emprestimo.status = 'devolvido';
+                    localStorage.setItem('emprestimos', JSON.stringify(emprestimos));
+
+                    // Atualizar estoque do livro
+                    const livros = JSON.parse(localStorage.getItem('livros') || '[]');
+                    const livro = livros.find(l => l.title === emprestimo.titulo);
+                    if (livro) {
+                        livro.estoque++;
+                        localStorage.setItem('livros', JSON.stringify(livros));
+                    }
+                }
+
+                // Remover solicitação
+                const index = solicitacoesDevolucao.findIndex(s => s.id === parseInt(id));
+                solicitacoesDevolucao.splice(index, 1);
+                localStorage.setItem('solicitacoesDevolucao', JSON.stringify(solicitacoesDevolucao));
+                
+                updateDevolucoesList();
+                alert('Devolução confirmada com sucesso!');
+            }
+        }
+
+        function rejeitarDevolucao(id) {
+            const solicitacoesDevolucao = JSON.parse(localStorage.getItem('solicitacoesDevolucao') || '[]');
+            const solicitacao = solicitacoesDevolucao.find(s => s.id === parseInt(id));
+            
+            if (solicitacao) {
+                // Atualizar status do empréstimo
+                const emprestimos = JSON.parse(localStorage.getItem('emprestimos') || '[]');
+                const emprestimo = emprestimos.find(e => e.id === solicitacao.emprestimoId);
+                
+                if (emprestimo) {
+                    emprestimo.status = 'emprestado';
+                    localStorage.setItem('emprestimos', JSON.stringify(emprestimos));
+                }
+
+                // Remover solicitação
+                const index = solicitacoesDevolucao.findIndex(s => s.id === parseInt(id));
+                solicitacoesDevolucao.splice(index, 1);
+                localStorage.setItem('solicitacoesDevolucao', JSON.stringify(solicitacoesDevolucao));
+                
+                updateDevolucoesList();
+                alert('Devolução rejeitada.');
+            }
+        }
+
+        // Função para alternar o painel de devoluções
+        function toggleDevolucoesPanel() {
+            const panel = document.getElementById('devolucoesPanel');
+            panel.classList.toggle('active');
+        }
+
+        // Fechar o painel ao clicar fora dele
+        document.addEventListener('click', function(event) {
+            const panel = document.getElementById('devolucoesPanel');
+            const devolucoesBtn = document.querySelector('.donations-btn:nth-child(2)');
+            
+            if (!panel.contains(event.target) && !devolucoesBtn.contains(event.target) && panel.classList.contains('active')) {
+                panel.classList.remove('active');
+            }
+        });
+
+        // Inicialização
+        window.addEventListener('load', () => {
+            // Adicionar uma doação pendente de exemplo
+            const exampleDonation = {
+                id: 'donation1',
+                user: 'Maria Silva',
+                book: 'O Senhor dos Anéis',
+                date: new Date().toLocaleDateString('pt-BR')
+            };
+
+            // Verificar se já existem doações
+            const pendingDonations = JSON.parse(localStorage.getItem('pendingDonations') || '[]');
+            
+            // Adicionar a doação apenas se não houver nenhuma
+            if (pendingDonations.length === 0) {
+                pendingDonations.push(exampleDonation);
+                localStorage.setItem('pendingDonations', JSON.stringify(pendingDonations));
+            }
+
+            updateBooksGrid();
+            updateDonationsList();
+            updateDevolucoesList();
+        });
+
+        // Fechar modal quando clicar fora dele
+        window.onclick = function(event) {
+            const modal = document.getElementById('bookModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html> 

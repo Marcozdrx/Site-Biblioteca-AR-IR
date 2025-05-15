@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Biblioteca Arco-Íris - Página do Usuário</title>
+  <link rel="icon" href="favicon.ico">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .header {
+      background: #333;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+    }
+
+    .header-title {
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .header-btn {
+      background: #ff9000;
+      color: white;
+      padding: 8px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .book-grid {
+      margin-top: 70px;
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 15px;
+      padding: 20px;
+    }
+
+    .book-card {
+      background: #ff9000;
+      border-radius: 10px;
+      padding: 10px;
+      text-align: center;
+      transition: transform 0.3s;
+      position: relative;
+    }
+
+    .book-card.indisponivel {
+      opacity: 0.7;
+    }
+
+    .book-card.indisponivel::after {
+      content: 'Indisponível';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+
+    .book-content {
+      cursor: pointer;
+    }
+
+    .book-thumb {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 5px;
+      margin-bottom: 8px;
+    }
+
+    .book-title {
+      color: white;
+      font-weight: bold;
+      font-size: 12px;
+      margin-bottom: 8px;
+      height: 36px;
+      overflow: hidden;
+      display: -webkit-box;
+      line-clamp: 3;
+      -webkit-box-orient: vertical;
+    }
+
+    .ver-mais-btn {
+      background: #fff;
+      color: #ff9000;
+      padding: 5px 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: background-color 0.3s;
+      position: relative;
+      z-index: 1;
+    }
+
+    .ver-mais-btn:hover {
+      background: #f0f0f0;
+    }
+
+    .ver-mais-btn:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(255, 144, 0, 0.5);
+    }
+
+    .estoque-info {
+      color: white;
+      font-size: 12px;
+      margin-top: 5px;
+    }
+
+    .agendar-btn {
+      background: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s;
+    }
+
+    .agendar-btn:hover {
+      background: #45a049;
+    }
+
+    /* Estilos do Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+    }
+
+    .modal-content {
+      position: relative;
+      background-color: #fff;
+      margin: 15% auto;
+      padding: 20px;
+      width: 70%;
+      max-width: 700px;
+      border-radius: 10px;
+      animation: modalOpen 0.3s ease-out;
+    }
+
+    @keyframes modalOpen {
+      from {
+        opacity: 0;
+        transform: translateY(-100px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .close-modal {
+      position: absolute;
+      right: 20px;
+      top: 15px;
+      font-size: 24px;
+      cursor: pointer;
+      color: #666;
+    }
+
+    .modal-header {
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #ff9000;
+    }
+
+    .modal-title {
+      color: #333;
+      font-size: 24px;
+      margin: 0;
+      margin-bottom: 10px;
+    }
+
+    .modal-subtitle {
+      color: #666;
+      font-size: 16px;
+      margin: 0;
+    }
+
+    .modal-body {
+      display: flex;
+      gap: 20px;
+    }
+
+    .modal-image {
+      width: 200px;
+      height: 300px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    .modal-info {
+      flex: 1;
+      padding: 0 20px;
+    }
+
+    .modal-description {
+      color: #666;
+      line-height: 1.6;
+      margin-bottom: 20px;
+      font-size: 14px;
+      text-align: justify;
+    }
+
+    .modal-details {
+      background: #f9f9f9;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .modal-details p {
+      margin: 5px 0;
+      color: #444;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .emprestar-btn {
+      background: #ff9000;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s;
+    }
+
+    .emprestar-btn:hover {
+      background: #ff7b00;
+    }
+
+    /* Estilos do Modal de Agendamento */
+    .agendamento-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      z-index: 1000;
+    }
+
+    .agendamento-content {
+      background: white;
+      margin: 15% auto;
+      padding: 20px;
+      width: 90%;
+      max-width: 500px;
+      border-radius: 10px;
+      position: relative;
+    }
+
+    .horarios-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin: 20px 0;
+    }
+
+    .horario-btn {
+      padding: 10px;
+      border: 2px solid #ff9000;
+      border-radius: 5px;
+      background: white;
+      color: #ff9000;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .horario-btn:hover {
+      background: #ff9000;
+      color: white;
+    }
+
+    .horario-btn.selected {
+      background: #ff9000;
+      color: white;
+    }
+
+    .horario-btn.disabled {
+      border-color: #ccc;
+      color: #ccc;
+      cursor: not-allowed;
+    }
+
+    .horario-btn.disabled:hover {
+      background: white;
+      color: #ccc;
+    }
+
+    .btn-confirmar-agendamento {
+      background: #ff9000;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 100%;
+      font-size: 16px;
+      margin-top: 20px;
+    }
+
+    .btn-confirmar-agendamento:hover {
+      background: #ff7b00;
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-title">
+      <img src="IMG/logo.png" alt="Logo" style="height: 30px;">
+      <span>Biblioteca Arco-Íris</span>
+    </div>
+    <div class="header-buttons">
+      <a href="emprestimos.html" class="header-btn">Meus Empréstimos</a>
+      <a href="index.html" class="header-btn">Sair</a>
+    </div>
+  </header>
+
+  <!-- Modal -->
+  <div id="bookModal" class="modal">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <div class="modal-header">
+        <h2 class="modal-title"></h2>
+        <p class="modal-subtitle"></p>
+      </div>
+      <div class="modal-body">
+        <img class="modal-image" src="" alt="Capa do livro">
+        <div class="modal-info">
+          <div class="modal-description"></div>
+          <div class="modal-details">
+            <p class="modal-autor"></p>
+            <p class="modal-ano"></p>
+            <p class="modal-paginas"></p>
+            <p class="modal-categoria"></p>
+          </div>
+          <button class="emprestar-btn">Emprestar Livro</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Agendamento -->
+  <div id="agendamentoModal" class="agendamento-modal">
+    <div class="agendamento-content">
+      <span class="close-modal">&times;</span>
+      <h2>Agendar Retirada</h2>
+      <p>Selecione um horário disponível para retirar o livro:</p>
+      <div class="horarios-grid" id="horariosGrid">
+        <!-- Horários serão inseridos via JavaScript -->
+      </div>
+      <button class="btn-confirmar-agendamento" id="confirmarAgendamento">Confirmar Agendamento</button>
+    </div>
+  </div>
+
+  <div class="book-grid">
+  <div class="book-card">
+    <div class="book-content">
+    <img src="IMG/domquixote.jpg" alt="Dom Quixote" class="book-thumb">
+    <div class="book-title">Dom Quixote</div>
+    </div>
+    <button class="ver-mais-btn">Ver mais</button>
+  </div>
+  <div class="book-card">
+    <div class="book-content">
+    <img src="IMG/1984.jpg" alt="1984" class="book-thumb">
+    <div class="book-title">1984</div>
+    </div>
+    <button class="ver-mais-btn">Ver mais</button>
+  </div>
+  <div class="book-card">
+    <div class="book-content">
+    <img src="IMG/orgulhoepreconceito.jpg" alt="Orgulho e Preconceito" class="book-thumb">
+    <div class="book-title">Orgulho e Preconceito</div>
+    </div>
+    <button class="ver-mais-btn">Ver mais</button>
+  </div>
+  <div class="book-card">
+    <div class="book-content">
+    <img src="IMG/osenhordosaneis.webp" alt="O Senhor dos Anéis" class="book-thumb">
+    <div class="book-title">O Senhor dos Anéis</div>
+    </div>
+    <button class="ver-mais-btn">Ver mais</button>
+  </div>
+  <div class="book-card">
+    <div class="book-content">
+    <img src="IMG/ametamorfose.webp" alt="A Metamorfose" class="book-thumb">
+    <div class="book-title">A Metamorfose</div>
+    </div>
+    <button class="ver-mais-btn">Ver mais</button>
+  </div>
+  <div class="book-card">
+    <div class="book-content">
+    <img src="IMG/cemanosdesolidao.jpg" alt="Cem Anos de Solidão" class="book-thumb">
+    <div class="book-title">Cem Anos de Solidão</div>
+    </div>
+    <button class="ver-mais-btn">Ver mais</button>
+  </div>
+  <div class="book-card">
+    <div class="book-content">
+    <img src="IMG/arevolucaodosbichos.jpg" alt="A Revolução dos Bichos" class="book-thumb">
+    <div class="book-title">A Revolução dos Bichos</div>
+    </div>
+    <button class="ver-mais-btn">Ver mais</button>
+  </div>
+  <div class="book-card">
+    <div class="book-content">
+    <img src="IMG/oalquimista.jpg" alt="O Alquimista" class="book-thumb">
+    <div class="book-title">O Alquimista</div>
+    </div>
+    <button class="ver-mais-btn">Ver mais</button>
+  </div>
+  <div class="book-card">
+    <div class="book-content">
+    <img src="IMG/ameninaqueroubavalivros.jpg" alt="A Menina que Roubava Livros" class="book-thumb">
+    <div class="book-title">A Menina que Roubava Livros</div>
+    </div>
+    <button class="ver-mais-btn">Ver mais</button>
+  </div>
+  <div class="book-card">
+    <div class="book-content">
+    <img src="IMG/ohobbit.jpg" alt="O Hobbit" class="book-thumb">
+    <div class="book-title">O Hobbit</div>
+    </div>
+    <button class="ver-mais-btn">Ver mais</button>
+  </div>
+  <div class="book-card">
+    <div class="book-content">
+    <img src="IMG/aculpaedasestrelas.jpg" alt="A Culpa é das Estrelas" class="book-thumb">
+    <div class="book-title">A Culpa é das Estrelas</div>
+    </div>
+    <button class="ver-mais-btn">Ver mais</button>
+  </div>
+  <div class="book-card">
+    <div class="book-content">
+    <img src="IMG/ocodigodavinci.jpg" alt="O Código Da Vinci" class="book-thumb">
+    <div class="book-title">O Código Da Vinci</div>
+    </div>
+    <button class="ver-mais-btn">Ver mais</button>
+  </div>
+  <div class="book-card">
+    <div class="book-content">
+    <img src="IMG/acabana.jpg" alt="A Cabana" class="book-thumb">
+    <div class="book-title">A Cabana</div>
+    </div>
+    <button class="ver-mais-btn">Ver mais</button>
+  </div>
+  <div class="book-card">
+    <div class="book-content">
+    <img src="IMG/onomedovento.jpg" alt="O Nome do Vento" class="book-thumb">
+    <div class="book-title">O Nome do Vento</div>
+    </div>
+    <button class="ver-mais-btn">Ver mais</button>
+  </div>
+  <div class="book-card">
+    <div class="book-content">
+    <img src="IMG/percyjacksoneoladraoderaios.jpg" alt="Percy Jackson e o Ladrão de Raios" class="book-thumb">
+    <div class="book-title">Percy Jackson e o Ladrão de Raios</div>
+    </div>
+    <button class="ver-mais-btn">Ver mais</button>
+  </div>
+  <div class="book-card">
+    <div class="book-content">
+    <img src="IMG/ascronicasdenarnia.jpg" alt="As Crônicas de Nárnia" class="book-thumb">
+    <div class="book-title">As Crônicas de Nárnia</div>
+    </div>
+    <button class="ver-mais-btn">Ver mais</button>
+  </div>
+  <div class="book-card">
+    <div class="book-content">
+    <img src="IMG/odiariodeannnefrank.jpg" alt="O Diário de Anne Frank" class="book-thumb">
+    <div class="book-title">O Diário de Anne Frank</div>
+    </div>
+    <button class="ver-mais-btn">Ver mais</button>
+  </div>
+  <div class="book-card">
+    <div class="book-content">
+    <img src="IMG/aartedaguerra.jpg" alt="A Arte da Guerra" class="book-thumb">
+    <div class="book-title">A Arte da Guerra</div>
+    </div>
+    <button class="ver-mais-btn">Ver mais</button>
+  </div>
+  <div class="book-card">
+    <div class="book-content">
+    <img src="IMG/oprincipe.jpg" alt="O Príncipe" class="book-thumb">
+    <div class="book-title">O Príncipe</div>
+    </div>
+    <button class="ver-mais-btn">Ver mais</button>
+  </div>
+  <div class="book-card">
+    <div class="book-content">
+    <img src="IMG/asmemoriaspostumasdebrascuba.jpg" alt="Memórias Póstumas de Brás Cubas" class="book-thumb">
+    <div class="book-title">Memórias Póstumas de Brás Cubas</div>
+    </div>
+    <button class="ver-mais-btn">Ver mais</button>
+  </div>
+  <div class="book-card">
+    <div class="book-content">
+    <img src="IMG/domcasmurro.webp" alt="Dom Casmurro" class="book-thumb">
+    <div class="book-title">Dom Casmurro</div>
+    </div>
+    <button class="ver-mais-btn">Ver mais</button>
+  </div>
+  <div class="book-card">
+    <div class="book-content">
+    <img src="IMG/ocortico.jpg" alt="O Cortiço" class="book-thumb">
+    <div class="book-title">O Cortiço</div>
+    </div>
+    <button class="ver-mais-btn">Ver mais</button>
+  </div>
+  <div class="book-card">
+    <div class="book-content">
+    <img src="IMG/vidassecas.jpg" alt="Vidas Secas" class="book-thumb">
+    <div class="book-title">Vidas Secas</div>
+    </div>
+    <button class="ver-mais-btn">Ver mais</button>
+  </div>
+  <div class="book-card">
+    <div class="book-content">
+    <img src="IMG/capitaesdaareia.jpg" alt="Capitães da Areia" class="book-thumb">
+    <div class="book-title">Capitães da Areia</div>
+    </div>
+    <button class="ver-mais-btn">Ver mais</button>
+  </div>
+  <div class="book-card">
+    <div class="book-content">
+    <img src="IMG/grandesertaoveredas.jpg" alt="Grande Sertão: Veredas" class="book-thumb">
+    <div class="book-title">Grande Sertão: Veredas</div>
+    </div>
+    <button class="ver-mais-btn">Ver mais</button>
+  </div>
+  <div class="book-card">
+    <div class="book-content">
+    <img src="IMG/macunaima.jpg" alt="Macunaíma" class="book-thumb">
+    <div class="book-title">Macunaíma</div>
+    </div>
+    <button class="ver-mais-btn">Ver mais</button>
+  </div>
+</div>
+
+
+  <script>
+    // Verificar se o usuário está logado
+    window.addEventListener('load', function() {
+      const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+      if (!usuarioLogado) {
+        window.location.href = 'login.html';
+        return;
+      }
+    });
+
+    // Carregar livros do localStorage
+    const livros = JSON.parse(localStorage.getItem('livros') || '[]');
+
+    // Atualizar cards dos livros
+    document.querySelectorAll('.book-card').forEach(card => {
+      const title = card.querySelector('.book-title').textContent;
+      const livro = livros.find(l => l.title === title);
+      
+      if (livro) {
+        if (livro.estoque <= 0) {
+          card.classList.add('indisponivel');
+        }
+        
+        const estoqueInfo = document.createElement('div');
+        estoqueInfo.className = 'estoque-info';
+        estoqueInfo.textContent = `Disponíveis: ${livro.estoque}`;
+        card.appendChild(estoqueInfo);
+      }
+    });
+
+    // Função para processar o empréstimo
+    function processarEmprestimo(title, imgSrc) {
+      const livro = livros.find(l => l.title === title);
+      
+      if (!livro) return;
+
+      if (livro.estoque <= 0) {
+        openAgendamentoModal(title, imgSrc);
+      } else {
+        // Lógica existente de empréstimo
+        const emprestimos = JSON.parse(localStorage.getItem('emprestimos') || '[]');
+        const emprestimosAtivos = emprestimos.filter(e => e.status === 'emprestado');
+        
+        if (emprestimosAtivos.length >= 5) {
+          alert('Você deve devolver um livro para fazer o empréstimo de outro livro.');
+          return;
+        }
+
+        const livroJaEmprestado = emprestimosAtivos.some(e => e.titulo === title);
+        if (livroJaEmprestado) {
+          alert('Você já possui um exemplar deste livro emprestado.');
+          return;
+        }
+        
+        const hoje = new Date();
+        const dataDevolucao = new Date(hoje);
+        dataDevolucao.setDate(hoje.getDate() + 15);
+        
+        const novoEmprestimo = {
+          id: Date.now(),
+          titulo: title,
+          imagem: imgSrc,
+          dataEmprestimo: hoje.toLocaleDateString('pt-BR'),
+          dataDevolucao: dataDevolucao.toLocaleDateString('pt-BR'),
+          status: 'emprestado',
+          renovado: false
+        };
+        
+        livro.estoque--;
+        const livrosAtualizados = JSON.parse(localStorage.getItem('livros') || '[]');
+        const livroIndex = livrosAtualizados.findIndex(l => l.title === title);
+        if (livroIndex !== -1) {
+          livrosAtualizados[livroIndex].estoque = livro.estoque;
+          localStorage.setItem('livros', JSON.stringify(livrosAtualizados));
+        }
+        
+        emprestimos.push(novoEmprestimo);
+        localStorage.setItem('emprestimos', JSON.stringify(emprestimos));
+        
+        alert(`Livro "${title}" emprestado com sucesso!\nVerifique seus empréstimos ativos.`);
+        window.location.href = 'emprestimos.html';
+      }
+    }
+
+    // Função para abrir o modal
+    function openModal(title, imgSrc) {
+      const modal = document.getElementById('bookModal');
+      const livro = livros.find(l => l.title === title) || {
+        autor: 'Informação não disponível',
+        ano: 'Informação não disponível',
+        paginas: 'Informação não disponível',
+        categoria: 'Informação não disponível',
+        descricao: 'Descrição em breve...',
+        estoque: 0
+      };
+
+      modal.querySelector('.modal-title').textContent = title;
+      modal.querySelector('.modal-subtitle').textContent = `por ${livro.autor}`;
+      modal.querySelector('.modal-image').src = imgSrc;
+      modal.querySelector('.modal-description').textContent = livro.descricao;
+      modal.querySelector('.modal-autor').textContent = `Autor: ${livro.autor}`;
+      modal.querySelector('.modal-ano').textContent = `Ano de Publicação: ${livro.ano}`;
+      modal.querySelector('.modal-paginas').textContent = `Número de Páginas: ${livro.paginas}`;
+      modal.querySelector('.modal-categoria').textContent = `Categoria: ${livro.categoria}`;
+      
+      const emprestarBtn = modal.querySelector('.emprestar-btn');
+      if (livro.estoque <= 0) {
+        emprestarBtn.textContent = 'Agendar Livro';
+        emprestarBtn.classList.add('agendar-btn');
+      } else {
+        emprestarBtn.textContent = 'Emprestar Livro';
+        emprestarBtn.classList.remove('agendar-btn');
+      }
+
+      // Remover evento antigo e adicionar novo
+      const newEmprestarBtn = emprestarBtn.cloneNode(true);
+      emprestarBtn.parentNode.replaceChild(newEmprestarBtn, emprestarBtn);
+      newEmprestarBtn.onclick = () => processarEmprestimo(title, imgSrc);
+      
+      modal.style.display = 'block';
+    }
+
+    // Eventos dos cards
+    document.querySelectorAll('.book-card').forEach(card => {
+      const verMaisBtn = card.querySelector('.ver-mais-btn');
+      const bookContent = card.querySelector('.book-content');
+      const title = card.querySelector('.book-title').textContent;
+      const imgSrc = card.querySelector('.book-thumb').src;
+
+      // Evento do botão "Ver mais"
+      verMaisBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        openModal(title, imgSrc);
+      });
+
+      // Evento do conteúdo do card
+      bookContent.addEventListener('click', () => {
+        openModal(title, imgSrc);
+      });
+    });
+
+    // Fechar o modal
+    document.querySelector('.close-modal').addEventListener('click', () => {
+      document.getElementById('bookModal').style.display = 'none';
+    });
+
+    // Fechar o modal ao clicar fora dele
+    window.addEventListener('click', (e) => {
+      const modal = document.getElementById('bookModal');
+      if (e.target === modal) {
+        modal.style.display = 'none';
+      }
+    });
+
+    // Função para abrir o modal de agendamento
+    function openAgendamentoModal(title, imgSrc) {
+      const modal = document.getElementById('agendamentoModal');
+      const horariosGrid = document.getElementById('horariosGrid');
+      horariosGrid.innerHTML = '';
+
+      // Mostrar apenas os horários de funcionamento
+      const horariosFuncionamento = [
+        'Segunda a Sexta: 9h às 17h',
+        'Sábado: 9h às 13h',
+        'Domingo: Fechado'
+      ];
+
+      // Criar elementos para mostrar os horários
+      horariosFuncionamento.forEach(horario => {
+        const div = document.createElement('div');
+        div.className = 'horario-info';
+        div.textContent = horario;
+        div.style.padding = '10px';
+        div.style.marginBottom = '10px';
+        div.style.backgroundColor = '#f5f5f5';
+        div.style.borderRadius = '5px';
+        div.style.textAlign = 'center';
+        horariosGrid.appendChild(div);
+      });
+
+      // Configurar botão de confirmar
+      document.getElementById('confirmarAgendamento').onclick = () => {
+        const novoAgendamento = {
+          id: Date.now(),
+          titulo: title,
+          imagem: imgSrc,
+          dataAgendamento: new Date().toLocaleDateString('pt-BR'),
+          status: 'busca_pendente'
+        };
+
+        // Salvar agendamento
+        const agendamentos = JSON.parse(localStorage.getItem('agendamentos') || '[]');
+        agendamentos.push(novoAgendamento);
+        localStorage.setItem('agendamentos', JSON.stringify(agendamentos));
+
+        alert('Agendamento realizado com sucesso!\nVocê será notificado quando o livro estiver disponível.');
+        modal.style.display = 'none';
+        window.location.href = 'emprestimos.html';
+      };
+
+      modal.style.display = 'block';
+    }
+
+    // Fechar modal de agendamento
+    document.querySelector('.agendamento-modal .close-modal').addEventListener('click', () => {
+      document.getElementById('agendamentoModal').style.display = 'none';
+    });
+
+    // Fechar modal ao clicar fora
+    window.addEventListener('click', (e) => {
+      const modal = document.getElementById('agendamentoModal');
+      if (e.target === modal) {
+        modal.style.display = 'none';
+      }
+    });
+
+    // Adicionar evento de empréstimo/agendamento
+    document.querySelector('.emprestar-btn').addEventListener('click', function() {
+      const title = document.querySelector('.modal-title').textContent;
+      const imgSrc = document.querySelector('.modal-image').src;
+      const livro = livros.find(l => l.title === title);
+      
+      if (!livro) return;
+
+      // Verificar limite de empréstimos
+      const emprestimos = JSON.parse(localStorage.getItem('emprestimos') || '[]');
+      const emprestimosAtivos = emprestimos.filter(e => e.status !== 'devolvido');
+      
+      if (emprestimosAtivos.length >= 5) {
+        alert('Você deve devolver um livro para fazer o empréstimo de outro livro.');
+        return;
+      }
+
+      // Verificar se já tem o mesmo livro emprestado
+      const livroJaEmprestado = emprestimosAtivos.some(e => e.titulo === title);
+      if (livroJaEmprestado) {
+        alert('Você já possui um exemplar deste livro emprestado.');
+        return;
+      }
+      
+      const hoje = new Date();
+      const dataDevolucao = new Date(hoje);
+      dataDevolucao.setDate(hoje.getDate() + 15);
+      
+      const novoEmprestimo = {
+        id: Date.now(),
+        titulo: title,
+        imagem: imgSrc,
+        dataEmprestimo: hoje.toLocaleDateString('pt-BR'),
+        dataDevolucao: dataDevolucao.toLocaleDateString('pt-BR'),
+        status: livro.estoque <= 0 ? 'agendado' : 'emprestado',
+        renovado: false
+      };
+      
+      if (livro.estoque > 0) {
+        livro.estoque--;
+        // Atualizar estoque no localStorage para todas as páginas
+        const livrosAtualizados = JSON.parse(localStorage.getItem('livros') || '[]');
+        const livroIndex = livrosAtualizados.findIndex(l => l.title === title);
+        if (livroIndex !== -1) {
+          livrosAtualizados[livroIndex].estoque = livro.estoque;
+          localStorage.setItem('livros', JSON.stringify(livrosAtualizados));
+        }
+      }
+      
+      emprestimos.push(novoEmprestimo);
+      localStorage.setItem('emprestimos', JSON.stringify(emprestimos));
+      
+      const mensagem = livro.estoque <= 0 
+        ? `Livro "${title}" agendado com sucesso!\nVocê será notificado quando estiver disponível.`
+        : `Livro "${title}" emprestado com sucesso!\nVerifique seus empréstimos ativos.`;
+      
+      alert(mensagem);
+      window.location.href = 'emprestimos.html';
+    });
+
+    // Adicionar evento para fechar com ESC
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        document.getElementById('bookModal').style.display = 'none';
+      }
+    });
+
+    // Função para fazer logout
+    document.querySelector('a[href="index.html"]').addEventListener('click', function(e) {
+      e.preventDefault();
+      localStorage.removeItem('usuarioLogado');
+      window.location.href = 'index.html';
+    });
+  </script>
+</body>
+</html> 
