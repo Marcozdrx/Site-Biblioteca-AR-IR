@@ -579,6 +579,248 @@
         window.location.href = 'login.html';
         return;
       }
+
+      // Inicializar dados dos livros se não existirem
+      const livrosExistentes = JSON.parse(localStorage.getItem('livros') || '[]');
+      if (livrosExistentes.length === 0) {
+        const livrosIniciais = [
+          {
+            title: "Dom Quixote",
+            autor: "Miguel de Cervantes",
+            ano: "1605",
+            paginas: "863",
+            categoria: "Romance",
+            descricao: "A história de um cavaleiro que perdeu a razão de tanto ler romances de cavalaria.",
+            estoque: 5
+          },
+          {
+            title: "1984",
+            autor: "George Orwell",
+            ano: "1949",
+            paginas: "328",
+            categoria: "Ficção Científica",
+            descricao: "Uma distopia que retrata uma sociedade totalitária e opressiva.",
+            estoque: 3
+          },
+          {
+            title: "Orgulho e Preconceito",
+            autor: "Jane Austen",
+            ano: "1813",
+            paginas: "432",
+            categoria: "Romance",
+            descricao: "A história de Elizabeth Bennet e sua relação com o orgulhoso Sr. Darcy.",
+            estoque: 4
+          },
+          {
+            title: "O Senhor dos Anéis",
+            autor: "J.R.R. Tolkien",
+            ano: "1954",
+            paginas: "1178",
+            categoria: "Fantasia",
+            descricao: "Uma épica jornada para destruir um anel poderoso e salvar a Terra-média.",
+            estoque: 3
+          },
+          {
+            title: "A Metamorfose",
+            autor: "Franz Kafka",
+            ano: "1915",
+            paginas: "96",
+            categoria: "Ficção",
+            descricao: "A história de Gregor Samsa, que acorda transformado em um inseto.",
+            estoque: 2
+          },
+          {
+            title: "Cem Anos de Solidão",
+            autor: "Gabriel García Márquez",
+            ano: "1967",
+            paginas: "417",
+            categoria: "Realismo Mágico",
+            descricao: "A história da família Buendía ao longo de sete gerações.",
+            estoque: 3
+          },
+          {
+            title: "A Revolução dos Bichos",
+            autor: "George Orwell",
+            ano: "1945",
+            paginas: "152",
+            categoria: "Fábula",
+            descricao: "Uma sátira política sobre o totalitarismo.",
+            estoque: 4
+          },
+          {
+            title: "O Alquimista",
+            autor: "Paulo Coelho",
+            ano: "1988",
+            paginas: "208",
+            categoria: "Ficção",
+            descricao: "A jornada de Santiago em busca de seu tesouro pessoal.",
+            estoque: 5
+          },
+          {
+            title: "A Menina que Roubava Livros",
+            autor: "Markus Zusak",
+            ano: "2005",
+            paginas: "480",
+            categoria: "Ficção Histórica",
+            descricao: "A história de Liesel Meminger durante a Segunda Guerra Mundial.",
+            estoque: 3
+          },
+          {
+            title: "O Hobbit",
+            autor: "J.R.R. Tolkien",
+            ano: "1937",
+            paginas: "310",
+            categoria: "Fantasia",
+            descricao: "A aventura de Bilbo Bolseiro em sua jornada com os anões.",
+            estoque: 4
+          },
+          {
+            title: "A Culpa é das Estrelas",
+            autor: "John Green",
+            ano: "2012",
+            paginas: "288",
+            categoria: "Romance",
+            descricao: "A história de amor entre dois adolescentes com câncer.",
+            estoque: 3
+          },
+          {
+            title: "O Código Da Vinci",
+            autor: "Dan Brown",
+            ano: "2003",
+            paginas: "689",
+            categoria: "Suspense",
+            descricao: "Uma trama envolvendo símbolos e segredos da Igreja Católica.",
+            estoque: 4
+          },
+          {
+            title: "A Cabana",
+            autor: "William P. Young",
+            ano: "2007",
+            paginas: "256",
+            categoria: "Ficção",
+            descricao: "A jornada de um pai após a tragédia com sua filha.",
+            estoque: 3
+          },
+          {
+            title: "O Nome do Vento",
+            autor: "Patrick Rothfuss",
+            ano: "2007",
+            paginas: "662",
+            categoria: "Fantasia",
+            descricao: "A história de Kvothe, um músico e mago lendário.",
+            estoque: 2
+          },
+          {
+            title: "Percy Jackson e o Ladrão de Raios",
+            autor: "Rick Riordan",
+            ano: "2005",
+            paginas: "377",
+            categoria: "Fantasia",
+            descricao: "Aventuras de um garoto que descobre ser filho de Poseidon.",
+            estoque: 4
+          },
+          {
+            title: "As Crônicas de Nárnia",
+            autor: "C.S. Lewis",
+            ano: "1950",
+            paginas: "767",
+            categoria: "Fantasia",
+            descricao: "Aventuras de crianças em um mundo mágico.",
+            estoque: 3
+          },
+          {
+            title: "O Diário de Anne Frank",
+            autor: "Anne Frank",
+            ano: "1947",
+            paginas: "352",
+            categoria: "Biografia",
+            descricao: "O diário de uma jovem judia durante a Segunda Guerra.",
+            estoque: 2
+          },
+          {
+            title: "A Arte da Guerra",
+            autor: "Sun Tzu",
+            ano: "500 a.C.",
+            paginas: "160",
+            categoria: "Estratégia",
+            descricao: "Um tratado militar chinês sobre estratégia e táticas.",
+            estoque: 4
+          },
+          {
+            title: "O Príncipe",
+            autor: "Nicolau Maquiavel",
+            ano: "1532",
+            paginas: "160",
+            categoria: "Filosofia Política",
+            descricao: "Um tratado sobre política e poder.",
+            estoque: 3
+          },
+          {
+            title: "Memórias Póstumas de Brás Cubas",
+            autor: "Machado de Assis",
+            ano: "1881",
+            paginas: "240",
+            categoria: "Romance",
+            descricao: "A autobiografia de um defunto autor.",
+            estoque: 3
+          },
+          {
+            title: "Dom Casmurro",
+            autor: "Machado de Assis",
+            ano: "1899",
+            paginas: "256",
+            categoria: "Romance",
+            descricao: "A história de Bentinho e Capitu.",
+            estoque: 4
+          },
+          {
+            title: "O Cortiço",
+            autor: "Aluísio Azevedo",
+            ano: "1890",
+            paginas: "288",
+            categoria: "Romance",
+            descricao: "A vida em um cortiço no Rio de Janeiro do século XIX.",
+            estoque: 3
+          },
+          {
+            title: "Vidas Secas",
+            autor: "Graciliano Ramos",
+            ano: "1938",
+            paginas: "176",
+            categoria: "Romance",
+            descricao: "A vida de uma família de retirantes no sertão nordestino.",
+            estoque: 3
+          },
+          {
+            title: "Capitães da Areia",
+            autor: "Jorge Amado",
+            ano: "1937",
+            paginas: "256",
+            categoria: "Romance",
+            descricao: "A vida de meninos de rua em Salvador.",
+            estoque: 4
+          },
+          {
+            title: "Grande Sertão: Veredas",
+            autor: "João Guimarães Rosa",
+            ano: "1956",
+            paginas: "624",
+            categoria: "Romance",
+            descricao: "A história de Riobaldo e seu pacto com o diabo.",
+            estoque: 2
+          },
+          {
+            title: "Macunaíma",
+            autor: "Mário de Andrade",
+            ano: "1928",
+            paginas: "160",
+            categoria: "Romance",
+            descricao: "A história do herói sem nenhum caráter.",
+            estoque: 3
+          }
+        ];
+        localStorage.setItem('livros', JSON.stringify(livrosIniciais));
+      }
     });
 
     // Carregar livros do localStorage
