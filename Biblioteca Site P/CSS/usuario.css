@@ -1,0 +1,358 @@
+body {
+    background: url('IMG/fundo.png') no-repeat center center fixed !important;
+    background-size: cover !important;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.1);
+    z-index: 0;
+  }
+  
+  .container {
+    width: 100%;
+    max-width: 600px;
+    padding: 20px;
+    position: relative;
+    z-index: 1;
+  }
+.header {
+    background: #333;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+  }
+
+  .header-title {
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .header-buttons {
+    display: flex;
+    gap: 10px;
+  }
+
+  .header-btn {
+    background: #ff9000;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 14px;
+  }
+
+  .book-grid {
+    margin-top: 70px;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 15px;
+    padding: 20px;
+  }
+
+  .book-card {
+    background: #ff9000;
+    border-radius: 10px;
+    padding: 10px;
+    text-align: center;
+    transition: transform 0.3s;
+    position: relative;
+  }
+
+  .book-card.indisponivel {
+    opacity: 0.7;
+  }
+
+  .book-card.indisponivel::after {
+    content: 'Indisponível';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+  }
+
+  .book-content {
+    cursor: pointer;
+  }
+
+  .book-thumb {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-bottom: 8px;
+  }
+
+  .book-title {
+    color: white;
+    font-weight: bold;
+    font-size: 12px;
+    margin-bottom: 8px;
+    height: 36px;
+    overflow: hidden;
+    display: -webkit-box;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+  }
+
+  .ver-mais-btn {
+    background: #fff;
+    color: #ff9000;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background-color 0.3s;
+    position: relative;
+    z-index: 1;
+  }
+
+  .ver-mais-btn:hover {
+    background: #f0f0f0;
+  }
+
+  .ver-mais-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255, 144, 0, 0.5);
+  }
+
+  .estoque-info {
+    color: white;
+    font-size: 12px;
+    margin-top: 5px;
+  }
+
+  .agendar-btn {
+    background: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+  }
+
+  .agendar-btn:hover {
+    background: #45a049;
+  }
+
+  /* Estilos do Modal */
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+  }
+
+  .modal-content {
+    position: relative;
+    background-color: #fff;
+    margin: 15% auto;
+    padding: 20px;
+    width: 70%;
+    max-width: 700px;
+    border-radius: 10px;
+    animation: modalOpen 0.3s ease-out;
+  }
+
+  @keyframes modalOpen {
+    from {
+      opacity: 0;
+      transform: translateY(-100px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .close-modal {
+    position: absolute;
+    right: 20px;
+    top: 15px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #666;
+  }
+
+  .modal-header {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #ff9000;
+  }
+
+  .modal-title {
+    color: #333;
+    font-size: 24px;
+    margin: 0;
+    margin-bottom: 10px;
+  }
+
+  .modal-subtitle {
+    color: #666;
+    font-size: 16px;
+    margin: 0;
+  }
+
+  .modal-body {
+    display: flex;
+    gap: 20px;
+  }
+
+  .modal-image {
+    width: 200px;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+
+  .modal-info {
+    flex: 1;
+    padding: 0 20px;
+  }
+
+  .modal-description {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    font-size: 14px;
+    text-align: justify;
+  }
+
+  .modal-details {
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+
+  .modal-details p {
+    margin: 5px 0;
+    color: #444;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  .emprestar-btn {
+    background: #ff9000;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+  }
+
+  .emprestar-btn:hover {
+    background: #ff7b00;
+  }
+
+  /* Estilos do Modal de Agendamento */
+  .agendamento-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    z-index: 1000;
+  }
+
+  .agendamento-content {
+    background: white;
+    margin: 15% auto;
+    padding: 20px;
+    width: 90%;
+    max-width: 500px;
+    border-radius: 10px;
+    position: relative;
+  }
+
+  .horarios-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 20px 0;
+  }
+
+  .horario-btn {
+    padding: 10px;
+    border: 2px solid #ff9000;
+    border-radius: 5px;
+    background: white;
+    color: #ff9000;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .horario-btn:hover {
+    background: #ff9000;
+    color: white;
+  }
+
+  .horario-btn.selected {
+    background: #ff9000;
+    color: white;
+  }
+
+  .horario-btn.disabled {
+    border-color: #ccc;
+    color: #ccc;
+    cursor: not-allowed;
+  }
+
+  .horario-btn.disabled:hover {
+    background: white;
+    color: #ccc;
+  }
+
+  .btn-confirmar-agendamento {
+    background: #ff9000;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 16px;
+    margin-top: 20px;
+  }
+
+  .btn-confirmar-agendamento:hover {
+    background: #ff7b00;
+  }
