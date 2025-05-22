@@ -27,21 +27,6 @@
           <span class="icon">🔒</span>
           <input type="password" name="senha" placeholder="Senha" required>
         </div>
-        <div class="radio-group">
-          <label>Você é pai ou criança:</label>
-          <div class="radio-options">
-            <label>
-              <input type="radio" name="tipo" value="pai" required>
-              <span class="icon">👨</span>
-              Pai
-            </label>
-            <label>
-              <input type="radio" name="tipo" value="crianca">
-              <span class="icon">👶</span>
-              Criança
-            </label>
-          </div>
-        </div>
         <div class="input-group">
           <span class="icon">👤</span>
           <input type="text" name="nome" placeholder="Nome" required>
@@ -60,7 +45,7 @@
       const formData = new FormData(this);
       
       if (formData.get('cpf') && formData.get('telefone') && 
-          formData.get('senha') && formData.get('tipo') && formData.get('nome')) {
+          formData.get('senha') && formData.get('nome')) {
         // Aqui você adicionaria a lógica de registro com o backend
         alert('Registro realizado com sucesso!');
         window.location.href = 'login.html';
